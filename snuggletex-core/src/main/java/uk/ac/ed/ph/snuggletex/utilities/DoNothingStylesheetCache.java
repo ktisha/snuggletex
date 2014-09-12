@@ -1,0 +1,26 @@
+/* $Id: DoNothingStylesheetCache.java 742 2012-05-07 13:09:53Z davemckain $
+ *
+ * Copyright (c) 2008-2011, The University of Edinburgh.
+ * All Rights Reserved
+ */
+package uk.ac.ed.ph.snuggletex.utilities;
+
+import javax.xml.transform.Templates;
+
+/**
+ * Trivial implementation of {@link StylesheetCache} that actually doesn't cache anything
+ * at all. This might be useful during development when you don't want caching at all.
+ *
+ * @author  David McKain
+ * @version $Revision: 742 $
+ */
+public final class DoNothingStylesheetCache implements StylesheetCache {
+
+    public Templates getStylesheet(String key) {
+        return null;
+    }
+    
+    public void putStylesheet(String key, Templates stylesheet) {
+        /* (Do nothing) */
+    }
+}

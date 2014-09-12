@@ -1,0 +1,21 @@
+/* $Id: CombinerTargetMatcher.java 742 2012-05-07 13:09:53Z davemckain $
+ *
+ * Copyright (c) 2008-2011, The University of Edinburgh.
+ * All Rights Reserved
+ */
+package uk.ac.ed.ph.snuggletex.definitions;
+
+import uk.ac.ed.ph.snuggletex.tokens.FlowToken;
+
+/**
+ * This interface is used to specify which {@link FlowToken}s are valid as combiner targets
+ * for {@link Command}s of type {@link CommandType#COMBINER}
+ *
+ * @author  David McKain
+ * @version $Revision: 742 $
+ */
+public interface CombinerTargetMatcher {
+    
+    boolean isAllowed(FlowToken target);
+
+}

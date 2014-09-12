@@ -1,0 +1,282 @@
+<?xml version="1.0"?>
+<!--
+
+$Id: pom.xml 742 2012-05-07 13:09:53Z davemckain $
+
+Copyright (c) 2008-2011, The University of Edinburgh
+All Rights Reserved
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>uk.ac.ed.ph.snuggletex</groupId>
+  <artifactId>snuggletex</artifactId>
+  <version>1.3-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <modules>
+    <module>snuggletex-core</module>
+    <module>snuggletex-jeuclid</module>
+    <module>snuggletex-distribution</module>
+  </modules>
+  <properties>
+    <junit.version>4.10</junit.version>
+    <easymock.version>3.1</easymock.version>
+    <jeuclid.version>3.1.9</jeuclid.version>
+    <asciimath-parser.version>1.0</asciimath-parser.version>
+    <saxon9.version>9.1.0.8</saxon9.version>
+    <slf4j.version>1.6.4</slf4j.version>
+    <log4j.version>1.2.16</log4j.version>
+    <maven.site.url>http://snuggletex.sourceforge.net/maven/</maven.site.url>
+  </properties>
+  <repositories>
+    <repository>
+      <id>www2.ph.ed.ac.uk</id>
+      <url>http://www2.ph.ed.ac.uk/maven2</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+  </repositories>
+  <name>SnuggleTeX</name>
+  <url>http://snuggletex.sourceforge.net</url>
+  <description>
+    SnuggleTeX is a free and open-source Java library for converting LaTeX to XML
+    (usually XHTML + MathML).
+  </description>
+  <inceptionYear>2008</inceptionYear>
+  <organization>
+    <name>The University of Edinburgh</name>
+    <url>http://www.ed.ac.uk</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>BSD License (3 clause)</name>
+      <url>LICENSE.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>davemckain</id>
+      <name>David McKain</name>
+      <email>david.mckain&#xa0;[at]&#xa0;ed.ac.uk</email>
+      <url>http://www.ph.ed.ac.uk/people/david-mckain</url>
+      <organization>School of Physics and Astronomy, University of Edinburgh</organization>
+      <organizationUrl>http://www.ph.ed.ac.uk</organizationUrl>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+      </roles>
+      <timezone>0</timezone>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:svn:https://snuggletex.svn.sourceforge.net/svnroot/snuggletex/trunk</connection>
+    <developerConnection>scm:svn:https://snuggletex.svn.sourceforge.net/svnroot/snuggletex/trunk</developerConnection>
+    <url>http://snuggletex.svn.sourceforge.net/svnroot/snuggletex/trunk</url>
+  </scm>
+  <issueManagement>
+    <system>sourceforge</system>
+    <url>http://sourceforge.net/tracker/?group_id=221375</url>
+  </issueManagement>
+  <distributionManagement>
+    <!-- (This is not intended for general use!) -->
+    <repository>
+      <id>www2.ph.ed.ac.uk</id>
+      <url>file:///Disk/apps-team/repositories/maven2</url>
+    </repository>
+    <snapshotRepository>
+      <id>www2.ph.ed.ac.uk</id>
+      <url>file:///Disk/apps-team/repositories/maven2</url>
+    </snapshotRepository>
+    <site>
+      <!--
+      Reminder! Need to create a shell on sourceforge first before trying to do
+      a site deployment.
+
+      ssh -t davemckain,snuggletex@shell.sourceforge.net create
+      -->
+      <id>sourceforge.net</id>
+      <url>scp://shell.sourceforge.net/home/groups/s/sn/snuggletex/htdocs/maven</url>
+    </site>
+  </distributionManagement>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.4</version>
+          <configuration>
+            <source>1.5</source>
+            <target>1.5</target>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.5</version>
+          <configuration>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.12</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.4</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>2.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.1.2</version>
+          <executions>
+            <execution>
+              <phase>verify</phase>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.3</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>findbugs-maven-plugin</artifactId>
+          <version>2.4.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>1.2.1</version>
+        </plugin>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <versionRange>[1.2,)</versionRange>
+                    <goals>
+                      <goal>exec</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.4</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <!--UNUSED <report>cim</report> -->
+              <!-- (Hanging due to a bad dependency URL) -->
+              <report>dependencies</report>
+              <report>dependency-convergence</report>
+              <report>dependency-management</report>
+              <report>help</report>
+              <report>index</report>
+              <report>issue-tracking</report>
+              <report>license</report>
+              <!-- UNUSED <report>mailing-list</report>-->
+              <report>plugin-management</report>
+              <report>plugins</report>
+              <report>project-team</report>
+              <report>scm</report>
+              <report>summary</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.8.1</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+            <inherited>false</inherited>
+          </reportSet>
+        </reportSets>
+        <configuration>
+          <!--
+          Hmmm... I seem to have to set this, even though it's deprecated.
+          See MJAVADOC-230 in the Maven JIRA.
+          -->
+          <aggregate>true</aggregate>
+          <linksource>yes</linksource>
+          <show>private</show>
+          <author>true</author>
+          <version>true</version>
+          <use>true</use>
+          <encoding>UTF-8</encoding>
+          <docencoding>UTF-8</docencoding>
+          <windowtitle>SnuggleTeX API Documentation</windowtitle>
+          <doctitle>SnuggleTeX API Documentation</doctitle>
+          <bottom><![CDATA[
+            <p><a href="http://www2.ph.ed.ac.uk/snuggletex/" target="_top">SnuggleTeX Home Page</a></p>
+            <p>Copyright &#xa9; 2008-2011 The School of Physics and Astronomy, The University of Edinburgh.</p>
+            <p style="font-style:italic">The University of Edinburgh is a charitable body, registered in Scotland, with registration number SC005336.</p>
+          ]]></bottom>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.3</version>
+        <configuration>
+          <aggregate>true</aggregate>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>2.12</version>
+        <configuration>
+          <aggregate>true</aggregate>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-changelog-plugin</artifactId>
+        <version>2.2</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-changes-plugin</artifactId>
+        <version>2.7</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>changes-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+</project>

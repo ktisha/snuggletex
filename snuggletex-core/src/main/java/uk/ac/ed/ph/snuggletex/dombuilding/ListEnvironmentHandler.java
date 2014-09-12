@@ -1,0 +1,91 @@
+/* $Id: ListEnvironmentHandler.java 742 2012-05-07 13:09:53Z davemckain $
+ *
+ * Copyright (c) 2008-2011, The University of Edinburgh.
+ * All Rights Reserved
+ */
+package uk.ac.ed.ph.snuggletex.dombuilding;
+
+import uk.ac.ed.ph.snuggletex.SnuggleLogicException;
+import uk.ac.ed.ph.snuggletex.definitions.BuiltinEnvironment;
+import uk.ac.ed.ph.snuggletex.definitions.CoreErrorCode;
+import uk.ac.ed.ph.snuggletex.definitions.CorePackageDefinitions;
+import uk.ac.ed.ph.snuggletex.internal.DOMBuilder;
+import uk.ac.ed.ph.snuggletex.internal.SnuggleParseException;
+import uk.ac.ed.ph.snuggletex.tokens.CommandToken;
+import uk.ac.ed.ph.snuggletex.tokens.EnvironmentToken;
+import uk.ac.ed.ph.snuggletex.tokens.FlowToken;
+import uk.ac.ed.ph.snuggletex.tokens.TokenType;
+
+import java.util.List;
+
+import org.w3c.dom.Element;
+
+/**
+ * This handles LaTeX list environments (i.e. <tt>itemize</tt> and <tt>enumerate</tt>).
+ * 
+ * @author  David McKain
+ * @version $Revision: 742 $
+ */
+public final class ListEnvironmentHandler implements EnvironmentHandler, CommandHandler {
+    
+    /**
+     * Builds the actual List environment
+     */
+    public void handleEnvironment(DOMBuilder builder, Element parentElement, EnvironmentToken token)
+            throws SnuggleParseException {
+        String listElementName = null;
+        BuiltinEnvironment environment = token.getEnvironment();
+        if (environment==CorePackageDefinitions.ENV_ITEMIZE) {
+            listElementName = "ul";
+        }
+        else if (environment==CorePackageDefinitions.ENV_ENUMERATE) {
+            listElementName = "ol";
+        }
+        else {
+            throw new SnuggleLogicException("No logic to handle list environment " + environment.getTeXName());
+        }
+        Element listElement = builder.appendXHTMLElement(parentElement, listElementName);
+        handleListContent(builder, parentElement, listElement, token.getContent().getContents());
+    }
+    
+    private void handleListContent(DOMBuilder builder, Element parentElement, Element listElement,
+            List<FlowToken> content)
+            throws SnuggleParseException {
+        for (FlowToken token : content) {
+            if (token.isCommand(CorePackageDefinitions.CMD_LIST_ITEM)) {
+                /* Good list item */
+                handleListItem(builder, listElement, (CommandToken) token);
+            }
+            else if (token.getType()==TokenType.ERROR) {
+                /* We'll append errors immediately *after* the list element */
+                builder.handleToken(parentElement, token);
+            }
+            else {
+                /* List environments should only contain list items. This should have
+                 * been sorted at token fixing so we've got a logic fault if we get here!
+                 */
+                throw new SnuggleLogicException("List environments can only contain list items - this should have been handled earlier");
+            }
+        }
+    }
+    
+    private void handleListItem(DOMBuilder builder, Element listElement, CommandToken itemToken)
+            throws SnuggleParseException {
+        Element listItemElement = builder.appendXHTMLElement(listElement, "li");
+        builder.handleTokens(listItemElement, itemToken.getArguments()[0], true);
+    }
+    
+    /* (List items are handled above, so anything matching here is an error.) */
+    public void handleCommand(DOMBuilder builder, Element parentElement, CommandToken itemToken)
+            throws SnuggleParseException {
+        if (itemToken.isCommand(CorePackageDefinitions.CMD_LIST_ITEM)) {
+            throw new SnuggleLogicException("List item outside environment - this should not have occurred");
+        }
+        else if (itemToken.isCommand(CorePackageDefinitions.CMD_ITEM)) {
+            /* This is a standard LaTeX \item. This would have been substituted if it was used
+             * in a legal position so we must conclude that it cannot be used here.
+             */
+            builder.appendOrThrowError(parentElement, itemToken, CoreErrorCode.TDEL00);
+        }
+    }
+}

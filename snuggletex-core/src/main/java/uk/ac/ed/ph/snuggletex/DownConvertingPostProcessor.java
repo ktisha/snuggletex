@@ -1,0 +1,29 @@
+/* $Id: DownConvertingPostProcessor.java 742 2012-05-07 13:09:53Z davemckain $
+ *
+ * Copyright (c) 2008-2011, The University of Edinburgh.
+ * All Rights Reserved
+ */
+package uk.ac.ed.ph.snuggletex;
+
+import uk.ac.ed.ph.snuggletex.utilities.MathMLDownConverter;
+import uk.ac.ed.ph.snuggletex.utilities.StylesheetManager;
+
+import org.w3c.dom.Document;
+
+/**
+ * Trivial implementation of {@link DOMPostProcessor} that hooks into the
+ * {@link MathMLDownConverter}. See {@link MathMLDownConverter} for information on what
+ * this does.
+ *
+ * @author  David McKain
+ * @version $Revision: 742 $
+ */
+public final class DownConvertingPostProcessor implements DOMPostProcessor {
+    
+    public Document postProcessDOM(Document workDocument, DOMOutputOptions options,
+            StylesheetManager stylesheetManager) {
+        MathMLDownConverter downConverter = new MathMLDownConverter(stylesheetManager, options);
+        return downConverter.downConvertDOM(workDocument);
+    }
+
+}
