@@ -1284,6 +1284,9 @@ public final class LaTeXTokeniser {
          * 
          * HOWEVER: If the command takes no 1 argument and no optional argument has been provided,
          * then LaTeX allows the next single token to be taken as the argument if it is not a brace.
+         *
+         * UPDATE: If the command accepts more than one argument LaTex allows the next single token
+         * to be split into arguments if it is not a brace.  (like \frac12)
          * 
          * E.g. \sqrt x is interpreted the same way as \sqrt{x}
          * 
@@ -1318,8 +1321,8 @@ public final class LaTeXTokeniser {
                 requiredArgumentSlices[i] = workingDocument.freezeSlice(startArgumentContentIndex, endArgumentContentIndex);
                 requiredArguments[i] = new ArgumentContainerToken(requiredArgumentSlices[i], argumentMode, argumentResult.tokens);
             }
-            else if (c!=-1 && i==0 && argCount==1 && optionalArgument==null && commandOrEnvironment instanceof Command) {
-                /* Special case listed above: command with 1 argument as a single token with no braces.
+            else if (c!=-1 && i==0 && optionalArgument==null && commandOrEnvironment instanceof Command) {
+                /* 2 Special cases listed above: command with an argument as a single token with no braces.
                  * Temporarily change LaTeX mode to that of the argument, pull in the next
                  * token and revert the mode to what we had initially.
                  */
@@ -1328,8 +1331,24 @@ public final class LaTeXTokeniser {
                 FlowToken nextToken = readNextToken();
                 currentModeState.latexMode = currentLaTeXMode;
                 if (nextToken!=null) {
+                  if (argCount == 1) {
                     requiredArguments[i] = ArgumentContainerToken.createFromSingleToken(argumentMode, nextToken);
-                    requiredArgumentSlices[i] = requiredArguments[i].getSlice();
+                      requiredArgumentSlices[i] = requiredArguments[i].getSlice();
+                  }
+                  else {
+                    final FrozenSlice slice = nextToken.getSlice();
+
+                    int diff = 0;
+                    while (i != argCount) {
+                      final SimpleToken simpleToken = new SimpleToken(workingDocument.freezeSlice(slice.startIndex + diff, slice.startIndex + diff + 1),
+                                                                      TokenType.TEXT_MODE_TEXT, currentModeState.latexMode, TextFlowContext.ALLOW_INLINE);
+                        requiredArguments[i] = ArgumentContainerToken.createFromSingleToken(argumentMode, simpleToken);
+                      requiredArgumentSlices[i] = requiredArguments[i].getSlice();
+                      ++i;
+                      ++diff;
+                    }
+                    break;
+                  }
                 }
                 else {
                     /* Error: Missing first (and only) argument. */
