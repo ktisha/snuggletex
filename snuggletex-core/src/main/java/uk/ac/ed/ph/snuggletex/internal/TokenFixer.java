@@ -574,6 +574,7 @@ public final class TokenFixer {
             fixLeadingNegativeNumber(tokens);
             fencePairedParentheses(parentToken, tokens); /* (Want to get parentheses first) */
             fixOverInstances(parentToken, tokens);
+            fixChooseInstances(parentToken, tokens);
             inferParenthesisFences(parentToken, tokens);
             fixSubscriptAndSuperscripts(parentToken, tokens);
             fixPrimes(tokens);
@@ -646,7 +647,39 @@ public final class TokenFixer {
             replaceTokens(tokens, 0, tokens.size(), replacementToken);
         }
     }
-    
+
+    /**
+     * This handles "... \choose ..." by refactoring the tokens into a \binom{...}{...}.
+     */
+    private void fixChooseInstances(Token parentToken, List<FlowToken> tokens) throws SnuggleParseException {
+        int index = -1;
+        FlowToken token;
+        for (int i = 0; i < tokens.size(); i++) { /* Note: size() may change here */
+            token = tokens.get(i);
+            if (token.isCommand(CorePackageDefinitions.CMD_CHOOSE)) {
+                if (index != -1) {
+                    tokens.clear();
+                    return;
+                }
+                index = i;
+            }
+        }
+        if (index != -1) {
+            List<FlowToken> beforeTokens = new ArrayList<FlowToken>(tokens.subList(0, index));
+            List<FlowToken> afterTokens = new ArrayList<FlowToken>(tokens.subList(index + 1, tokens.size()));
+            ComputedStyle beforeStyle = tokens.get(0).getComputedStyle();
+            CommandToken replacementToken = new CommandToken(parentToken.getSlice(),
+                LaTeXMode.MATH,
+                CorePackageDefinitions.CMD_BINOM,
+                null, /* No optional arg */
+                new ArgumentContainerToken[]{
+                    ArgumentContainerToken.createFromContiguousTokens(parentToken, LaTeXMode.MATH, beforeTokens, beforeStyle),
+                    ArgumentContainerToken.createFromContiguousTokens(parentToken, LaTeXMode.MATH, afterTokens, beforeStyle)
+                });
+            replaceTokens(tokens, 0, tokens.size(), replacementToken);
+        }
+    }
+
     /**
      * Hunts through tokens for occurrences of primes used as <tt>f'</tt>, which are converted
      * to a superscript by binding to the preceding token

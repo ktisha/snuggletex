@@ -5,80 +5,26 @@
  */
 package uk.ac.ed.ph.snuggletex.definitions;
 
-import static uk.ac.ed.ph.snuggletex.definitions.Globals.ALL_MODES;
-import static uk.ac.ed.ph.snuggletex.definitions.Globals.MATH_MODE_ONLY;
-import static uk.ac.ed.ph.snuggletex.definitions.Globals.PARA_MODE_ONLY;
-import static uk.ac.ed.ph.snuggletex.definitions.Globals.TEXT_MODE_ONLY;
-import static uk.ac.ed.ph.snuggletex.definitions.LaTeXMode.LR;
-import static uk.ac.ed.ph.snuggletex.definitions.LaTeXMode.MATH;
-import static uk.ac.ed.ph.snuggletex.definitions.LaTeXMode.PARAGRAPH;
-import static uk.ac.ed.ph.snuggletex.definitions.LaTeXMode.VERBATIM;
-import static uk.ac.ed.ph.snuggletex.definitions.TextFlowContext.ALLOW_INLINE;
-import static uk.ac.ed.ph.snuggletex.definitions.TextFlowContext.IGNORE;
-import static uk.ac.ed.ph.snuggletex.definitions.TextFlowContext.START_NEW_XHTML_BLOCK;
-
 import uk.ac.ed.ph.snuggletex.SnugglePackage;
 import uk.ac.ed.ph.snuggletex.SnuggleRuntimeException;
-import uk.ac.ed.ph.snuggletex.dombuilding.AccentHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.AnchorHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.ArrayHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.BoxHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.CharacterCommandHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.DoNothingHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.EnsureMathHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.EqnArrayHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.GetVarHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.HSpaceHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.HrefHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.InsertUnicodeHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.InterpretableSimpleMathHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.LineBreakHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.ListEnvironmentHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.LiteralHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.MathComplexCommandHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.MathEnvironmentHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.MathFenceHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.MathLimitsHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.MathNotHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.MathRootHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.MathUnderOrOverHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.MathVariantMapHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.MatrixHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.ModeDelegatingHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.MrowHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.ParagraphHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.SetVarHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.SimpleXHTMLContainerBuildingHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.SpaceHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.StyleHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.TabularHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.TextClassHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.TextSafeInterpretableMathIdentifierHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.UnitsHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.VerbatimHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.XMLAttrHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.XMLBlockElementHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.XMLInlineElementHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.XMLNameOrIdHandler;
-import uk.ac.ed.ph.snuggletex.dombuilding.XMLUnparseHandler;
-import uk.ac.ed.ph.snuggletex.semantics.Interpretation;
-import uk.ac.ed.ph.snuggletex.semantics.InterpretationType;
-import uk.ac.ed.ph.snuggletex.semantics.MathBracketInterpretation;
+import uk.ac.ed.ph.snuggletex.dombuilding.*;
+import uk.ac.ed.ph.snuggletex.semantics.*;
 import uk.ac.ed.ph.snuggletex.semantics.MathBracketInterpretation.BracketType;
-import uk.ac.ed.ph.snuggletex.semantics.MathIdentifierInterpretation;
-import uk.ac.ed.ph.snuggletex.semantics.MathOperatorInterpretation;
-import uk.ac.ed.ph.snuggletex.semantics.StyleDeclarationInterpretation;
 import uk.ac.ed.ph.snuggletex.tokens.FlowToken;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import static uk.ac.ed.ph.snuggletex.definitions.Globals.*;
+import static uk.ac.ed.ph.snuggletex.definitions.LaTeXMode.*;
+import static uk.ac.ed.ph.snuggletex.definitions.TextFlowContext.*;
+
 /**
  * This defines the default {@link SnugglePackage} (containing {@link BuiltinCommand} and
  * {@link BuiltinEnvironment}) supported by SnuggleTeX.
- * 
+ *
  * <h2>Notes</h2>
- * 
+ *
  * <ul>
  *   <li>This is defined in the static constructor(!)</li>
  *   <li>A subset of commands and environments are made available as constants.</li>
@@ -89,13 +35,13 @@ import java.util.ResourceBundle;
  * @version $Revision: 742 $
  */
 public final class CorePackageDefinitions {
-    
+
     /** Name of the core package */
     public static final String CORE_PACKAGE_NAME = "Core";
-    
+
     /** Location of {@link ResourceBundle} providing error messages for this bundle */
     public static final String CORE_ERROR_MESSAGES_PROPERTIES_BASENAME = "uk/ac/ed/ph/snuggletex/core-error-messages";
-    
+
     public static final String CORE_MATH_CHARACTER_DEFS_RESOURCE_NAME = "uk/ac/ed/ph/snuggletex/core-math-characters.txt";
     public static final String ALL_MATH_CHARACTER_DEFS_RESOURCE_NAME = "uk/ac/ed/ph/snuggletex/all-math-characters.txt";
     public static final String MATH_CHARACTER_BRACKETS_RESOURCE_NAME = "uk/ac/ed/ph/snuggletex/math-character-brackets.txt";
@@ -103,9 +49,10 @@ public final class CorePackageDefinitions {
     public static final String MATH_CHARACTER_NEGATIONS_RESOURCE_NAME = "uk/ac/ed/ph/snuggletex/math-character-negations.txt";
     public static final String MATH_CHARACTER_BIG_LIMITS_RESOURCE_NAME = "uk/ac/ed/ph/snuggletex/math-character-big-limits.txt";
     public static final String MATH_FUNCTION_DEFINITIONS_RESOURCE_NAME = "uk/ac/ed/ph/snuggletex/math-function-definitions.txt";
-    
+
     public static final BuiltinCommand CMD_CHAR_BACKSLASH;
     public static final BuiltinCommand CMD_FRAC;
+    public static final BuiltinCommand CMD_BINOM;
     public static final BuiltinCommand CMD_ITEM;
     public static final BuiltinCommand CMD_LIST_ITEM;
     public static final BuiltinCommand CMD_LEFT;
@@ -119,6 +66,7 @@ public final class CorePackageDefinitions {
     public static final BuiltinCommand CMD_NEWENVIRONMENT;
     public static final BuiltinCommand CMD_RENEWENVIRONMENT;
     public static final BuiltinCommand CMD_OVER;
+    public static final BuiltinCommand CMD_CHOOSE;
     public static final BuiltinCommand CMD_PAR;
     public static final BuiltinCommand CMD_PARAGRAPH;
     public static final BuiltinCommand CMD_TABLE_ROW;
@@ -135,15 +83,15 @@ public final class CorePackageDefinitions {
     public static final BuiltinEnvironment ENV_DISPLAYMATH;
     public static final BuiltinEnvironment ENV_BRACKETED;
     public static final BuiltinEnvironment ENV_STYLE;
-    
+
     private static final SnugglePackage corePackage;
 
 
-    
-    public static final SnugglePackage getPackage() {
+
+    public static SnugglePackage getPackage() {
         return corePackage;
     }
-    
+
     static {
         corePackage = new SnugglePackage(CORE_PACKAGE_NAME);
         
@@ -180,7 +128,7 @@ public final class CorePackageDefinitions {
         
         /* Load in function definitions */
         corePackage.loadMathFunctionDefinitions(MATH_FUNCTION_DEFINITIONS_RESOURCE_NAME);
-        
+
         //------------------------------------------------------------
         // Single (funny) character commands. These do not eat trailing whitespace
         //
@@ -193,11 +141,11 @@ public final class CorePackageDefinitions {
         corePackage.addSimpleCommand("_", ALL_MODES, new CharacterCommandHandler("_"), ALLOW_INLINE);
         corePackage.addSimpleCommand("{", ALL_MODES, new Interpretation[] {
                 new MathOperatorInterpretation("{"),
-                new MathBracketInterpretation(corePackage.getBuiltinCommandByTeXName("lbrace").getMathCharacter(), BracketType.OPENER, true),                
+                new MathBracketInterpretation(corePackage.getBuiltinCommandByTeXName("lbrace").getMathCharacter(), BracketType.OPENER, true),
             }, new ModeDelegatingHandler(new CharacterCommandHandler("{"), new InterpretableSimpleMathHandler()), null);
         corePackage.addSimpleCommand("}", ALL_MODES, new Interpretation[] {
                 new MathOperatorInterpretation("}"),
-                new MathBracketInterpretation(corePackage.getBuiltinCommandByTeXName("rbrace").getMathCharacter(), BracketType.CLOSER, true),                
+                new MathBracketInterpretation(corePackage.getBuiltinCommandByTeXName("rbrace").getMathCharacter(), BracketType.CLOSER, true),
             }, new ModeDelegatingHandler(new CharacterCommandHandler("}"), new InterpretableSimpleMathHandler()), null);
         corePackage.addSimpleCommand(",", ALL_MODES, new SpaceHandler("\u2009", "0.167em"), ALLOW_INLINE); /* Thin space, all modes */
         corePackage.addSimpleCommand(":", MATH_MODE_ONLY, new SpaceHandler(null, "0.222em"), null); /* Medium space, math only */
@@ -225,7 +173,7 @@ public final class CorePackageDefinitions {
         /* TODO: Is there an equivalent of the following in LaTeX for doing "literal" input, sort of like \verb
          * but output using a normal typeface???
          */
-        corePackage.addComplexCommandOneArg("literal", false, TEXT_MODE_ONLY, VERBATIM, new LiteralHandler(), null); 
+        corePackage.addComplexCommandOneArg("literal", false, TEXT_MODE_ONLY, VERBATIM, new LiteralHandler(), null);
 
         /* Tree version of a paragraph. The {@link TokenFixer} will create these, removing any
          * instances of {@link #PAR} and {@link TokenType#NEW_PARAGRAPH}.
@@ -322,7 +270,7 @@ public final class CorePackageDefinitions {
         
         /* Other symbols valid in all modes */
         corePackage.addSimpleCommand("pounds", ALL_MODES, new MathIdentifierInterpretation("\u00a3"), new TextSafeInterpretableMathIdentifierHandler(), ALLOW_INLINE);
-        
+
         //---------------------------------------------------------------
         // Math Mode stuff (see LaTeX Companion pp39-52)
         
@@ -367,7 +315,7 @@ public final class CorePackageDefinitions {
         CombinerTargetMatcher notTargetMatcher = new CombinerTargetMatcher() {
             public boolean isAllowed(FlowToken target) {
                 return target.hasInterpretationType(InterpretationType.MATH_NEGATABLE);
-            }  
+            }
         };
         corePackage.addCombinerCommand("not", MATH_MODE_ONLY, notTargetMatcher, new MathNotHandler(), null);
 
@@ -381,8 +329,10 @@ public final class CorePackageDefinitions {
         /* Complex math macros */
         corePackage.addComplexCommandSameArgMode("sqrt", true, 1, MATH_MODE_ONLY, new MathRootHandler(), null);
         CMD_FRAC = corePackage.addComplexCommandSameArgMode("frac", false, 2, MATH_MODE_ONLY, new MathComplexCommandHandler("mfrac"), null);
-        CMD_OVER = corePackage.addSimpleCommand("over", MATH_MODE_ONLY, null, null); /* TeX style fractions {... \over ...}, replaced during fixing *;
-        
+        CMD_OVER = corePackage.addSimpleCommand("over", MATH_MODE_ONLY, null, null); /* TeX style fractions {... \over ...}, replaced during fixing */
+        CMD_CHOOSE = corePackage.addSimpleCommand("choose", MATH_MODE_ONLY, null, null); /* TeX style fractions {... \choose ...}, replaced during fixing */
+        CMD_BINOM = corePackage.addComplexCommandSameArgMode("binom", false, 2, Globals.MATH_MODE_ONLY, new BinomHandler(), null);
+
         /* Spacing */
         corePackage.addSimpleCommand("quad", ALL_MODES, new SpaceHandler("\u00a0", "1em"), null);
         corePackage.addSimpleCommand("qquad", ALL_MODES, new SpaceHandler("\u00a0\u00a0", "2em"), null);
@@ -446,13 +396,13 @@ public final class CorePackageDefinitions {
         corePackage.addComplexCommandSameArgMode("setvar", true, 2, ALL_MODES, new SetVarHandler(), IGNORE);
         
         /* =================================== ENVIRONMENTS ================================= */
-        
+
         ENV_MATH = corePackage.addEnvironment("math", TEXT_MODE_ONLY, MATH, (Interpretation) null, new MathEnvironmentHandler(), ALLOW_INLINE);
         ENV_DISPLAYMATH = corePackage.addEnvironment("displaymath", TEXT_MODE_ONLY, MATH, (Interpretation) null, new MathEnvironmentHandler(), ALLOW_INLINE);
         ENV_VERBATIM = corePackage.addEnvironment("verbatim", PARA_MODE_ONLY, VERBATIM, (Interpretation) null, new VerbatimHandler(false), START_NEW_XHTML_BLOCK);
         ENV_ITEMIZE = corePackage.addEnvironment("itemize", PARA_MODE_ONLY, null, new Interpretation[] { Interpretation.LIST, Interpretation.STYLE_SENTINEL }, listEnvironmentHandler, START_NEW_XHTML_BLOCK);
         ENV_ENUMERATE = corePackage.addEnvironment("enumerate", PARA_MODE_ONLY, null, new Interpretation[] { Interpretation.LIST, Interpretation.STYLE_SENTINEL }, listEnvironmentHandler, START_NEW_XHTML_BLOCK);
-        
+
         corePackage.addEnvironment("tabular", false, 1, PARA_MODE_ONLY, PARAGRAPH, new Interpretation[] { Interpretation.STYLE_SENTINEL, Interpretation.TABULAR  }, tabularHandler, START_NEW_XHTML_BLOCK);
         corePackage.addEnvironment("array", false, 1, MATH_MODE_ONLY, MATH, Interpretation.TABULAR, new ArrayHandler(), null);
         corePackage.addEnvironment("cases", MATH_MODE_ONLY, MATH, Interpretation.TABULAR, new MatrixHandler(2, "{", ""), null);
@@ -486,7 +436,7 @@ public final class CorePackageDefinitions {
         corePackage.addEnvironment("sc", TEXT_MODE_ONLY, null, StyleDeclarationInterpretation.SC, doNothingHandler, ALLOW_INLINE);
         corePackage.addEnvironment("sl", TEXT_MODE_ONLY, null, StyleDeclarationInterpretation.SL, doNothingHandler, ALLOW_INLINE);
         corePackage.addEnvironment("sf", TEXT_MODE_ONLY, null, StyleDeclarationInterpretation.SF, doNothingHandler, ALLOW_INLINE);
-        
+
         corePackage.addEnvironment("tiny", TEXT_MODE_ONLY, null, StyleDeclarationInterpretation.TINY, doNothingHandler, ALLOW_INLINE);
         corePackage.addEnvironment("scriptsize", TEXT_MODE_ONLY, null, StyleDeclarationInterpretation.SCRIPTSIZE, doNothingHandler, ALLOW_INLINE);
         corePackage.addEnvironment("footnotesize", TEXT_MODE_ONLY, null, StyleDeclarationInterpretation.FOOTNOTESIZE, doNothingHandler, ALLOW_INLINE);
