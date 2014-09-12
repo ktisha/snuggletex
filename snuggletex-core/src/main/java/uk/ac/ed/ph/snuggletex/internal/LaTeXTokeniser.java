@@ -1330,22 +1330,28 @@ public final class LaTeXTokeniser {
                 currentModeState.latexMode = argumentMode;
                 FlowToken nextToken = readNextToken();
                 currentModeState.latexMode = currentLaTeXMode;
-                if (nextToken!=null) {
+                if (nextToken != null) {
                   if (argCount == 1) {
                     requiredArguments[i] = ArgumentContainerToken.createFromSingleToken(argumentMode, nextToken);
                       requiredArgumentSlices[i] = requiredArguments[i].getSlice();
                   }
                   else {
-                    final FrozenSlice slice = nextToken.getSlice();
-
-                    int diff = 0;
+                    int shift = 0;
+                    FrozenSlice slice = nextToken.getSlice();
                     while (i != argCount) {
-                      final SimpleToken simpleToken = new SimpleToken(workingDocument.freezeSlice(slice.startIndex + diff, slice.startIndex + diff + 1),
-                                                                      TokenType.TEXT_MODE_TEXT, currentModeState.latexMode, TextFlowContext.ALLOW_INLINE);
-                        requiredArguments[i] = ArgumentContainerToken.createFromSingleToken(argumentMode, simpleToken);
+                      if (slice.endIndex < slice.startIndex + i + 1) {
+                        nextToken = readNextToken();
+                        slice = nextToken.getSlice();
+                        shift = 0;
+                      }
+                      final FrozenSlice numberSlice = workingDocument.freezeSlice(slice.startIndex + shift, slice.startIndex + shift + 1);
+                      final SimpleToken simpleToken = new SimpleToken(numberSlice,
+                                                                      nextToken.getType(), currentModeState.latexMode, null,
+                                                                      new MathNumberInterpretation(numberSlice.extract()));
+                      requiredArguments[i] = ArgumentContainerToken.createFromSingleToken(argumentMode, simpleToken);
                       requiredArgumentSlices[i] = requiredArguments[i].getSlice();
                       ++i;
-                      ++diff;
+                      ++shift;
                     }
                     break;
                   }
