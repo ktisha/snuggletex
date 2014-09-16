@@ -410,6 +410,7 @@ public final class CorePackageDefinitions {
         corePackage.addEnvironment("eqnarray*", PARA_MODE_ONLY, MATH, Interpretation.TABULAR, new EqnArrayHandler(), START_NEW_XHTML_BLOCK);
         corePackage.addEnvironment("align", PARA_MODE_ONLY, MATH, Interpretation.TABULAR, new AlignHandler(), START_NEW_XHTML_BLOCK);
         corePackage.addEnvironment("align*", PARA_MODE_ONLY, MATH, Interpretation.TABULAR, new AlignHandler(), START_NEW_XHTML_BLOCK);
+        corePackage.addEnvironment("equation*", PARA_MODE_ONLY, MATH, Interpretation.TABULAR, new AlignHandler(), START_NEW_XHTML_BLOCK);
 
         /* AMS-LaTeX convenience environments */
         corePackage.addEnvironment("matrix", MATH_MODE_ONLY, MATH, Interpretation.TABULAR, new MatrixHandler(), null);
