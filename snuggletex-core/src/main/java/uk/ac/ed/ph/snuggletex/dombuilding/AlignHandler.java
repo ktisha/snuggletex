@@ -6,6 +6,7 @@
 package uk.ac.ed.ph.snuggletex.dombuilding;
 
 import org.w3c.dom.Element;
+import uk.ac.ed.ph.snuggletex.definitions.CoreErrorCode;
 import uk.ac.ed.ph.snuggletex.internal.DOMBuilder;
 import uk.ac.ed.ph.snuggletex.internal.DOMBuilder.MathContentBuilderCallback;
 import uk.ac.ed.ph.snuggletex.internal.SnuggleParseException;
@@ -17,21 +18,32 @@ import uk.ac.ed.ph.snuggletex.tokens.FlowToken;
 import java.util.List;
 
 /**
- * Handles the <tt>eqnarray*</tt> environment.
+ * Handles the <tt>align*</tt> environment.
  * 
- * @see MathEnvironmentHandler
- * 
+ * @see uk.ac.ed.ph.snuggletex.dombuilding.MathEnvironmentHandler
+ *
  * @author  David McKain
  * @version $Revision:179 $
  */
-public final class EqnArrayHandler implements EnvironmentHandler {
+public final class AlignHandler implements EnvironmentHandler {
+    
+    static final String[] COLUMN_ALIGNMENTS = {
+        "right",
+        "center",
+        "left"
+    };
 
     public void handleEnvironment(final DOMBuilder builder, Element parentElement, EnvironmentToken token)
             throws SnuggleParseException {
         /* Compute the geometry of the table and make sure its content model is OK */
         int[] geometry = TabularHandler.computeTableDimensions(token.getContent());
         final int numColumns = geometry[1];
-
+        if (numColumns>3) {
+            /* Error: eqnarray must have no more than 3 columns */
+            builder.appendOrThrowError(parentElement, token, CoreErrorCode.TDEM01, numColumns);
+            return;
+        }
+        
         /* Create callback to generate the actual content for the MathML */
         MathContentBuilderCallback callback = new MathContentBuilderCallback() {
             public void buildMathElementContent(Element contentContainerElement,
@@ -40,13 +52,14 @@ public final class EqnArrayHandler implements EnvironmentHandler {
                 /* Build <mtable/> */
                 Element mtableElement = builder.appendMathMLElement(contentContainerElement, "mtable");
                 Element mtrElement, mtdElement;
+                int columnIndex;
                 for (FlowToken rowToken : mathContentToken) {
                     mtrElement = builder.appendMathMLElement(mtableElement, "mtr");
                     List<FlowToken> columns = ((CommandToken) rowToken).getArguments()[0].getContents();
+                    columnIndex = 0;
                     for (FlowToken columnToken : columns) {
                         mtdElement = builder.appendMathMLElement(mtrElement, "mtd");
-                        mtdElement.setAttribute("form", "infix");
-                        mtdElement.setAttribute("lspace", "mediummathspace");
+                        mtdElement.setAttribute("columnalign", COLUMN_ALIGNMENTS[columnIndex++]);
                         builder.handleTokens(mtdElement, ((CommandToken) columnToken).getArguments()[0].getContents(), true);
                     }
                     /* Add empty <td/> for missing columns */
@@ -54,7 +67,7 @@ public final class EqnArrayHandler implements EnvironmentHandler {
                         builder.appendMathMLElement(mtrElement, "mtd");
                     }
                 }
-
+                
             }
         };
         

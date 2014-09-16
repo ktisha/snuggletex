@@ -499,7 +499,7 @@ public final class TokenFixer {
                  * there are lots of corner cases to consider.
                  */
                 rowBuilder.add(buildGroupedCommandToken(environmentToken, CorePackageDefinitions.CMD_TABLE_COLUMN, columnBuilder, columnStartStyle));
-                
+
                 /* Then add row */
                 resultBuilder.add(buildGroupedCommandToken(environmentToken, CorePackageDefinitions.CMD_TABLE_ROW, rowBuilder, rowBuilder.get(0).getComputedStyle()));
             }

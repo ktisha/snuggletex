@@ -1,0 +1,56 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mtable>
+    <mtr>
+      <mtd form="infix" lspace="mediummathspace">
+        <msup>
+          <mi>x</mi>
+          <mi>'</mi>
+        </msup>
+      </mtd>
+      <mtd form="infix" lspace="mediummathspace">
+        <mo>=</mo>
+      </mtd>
+      <mtd form="infix" lspace="mediummathspace"/>
+      <mtd form="infix" lspace="mediummathspace">
+        <mi>x</mi>
+        <mi>sin</mi>
+        <mi>φ</mi>
+      </mtd>
+      <mtd form="infix" lspace="mediummathspace">
+        <mo>+</mo>
+      </mtd>
+      <mtd form="infix" lspace="mediummathspace">
+        <mi>z</mi>
+        <mi>cos</mi>
+        <mi>φ</mi>
+      </mtd>
+    </mtr>
+    <mtr>
+      <mtd form="infix" lspace="mediummathspace">
+        <msup>
+          <mi>z</mi>
+          <mi>'</mi>
+        </msup>
+      </mtd>
+      <mtd form="infix" lspace="mediummathspace">
+        <mo>=</mo>
+      </mtd>
+      <mtd form="infix" lspace="mediummathspace">
+        <mo>-</mo>
+      </mtd>
+      <mtd form="infix" lspace="mediummathspace">
+        <mi>x</mi>
+        <mi>cos</mi>
+        <mi>φ</mi>
+      </mtd>
+      <mtd form="infix" lspace="mediummathspace">
+        <mo>+</mo>
+      </mtd>
+      <mtd form="infix" lspace="mediummathspace">
+        <mi>z</mi>
+        <mi>sin</mi>
+        <mi>φ</mi>
+      </mtd>
+    </mtr>
+  </mtable>
+</math>

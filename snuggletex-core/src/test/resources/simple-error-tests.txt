@@ -271,7 +271,7 @@ TDEXU1
 \item A
 TDEL00
 ====
-\begin{eqnarray*} 1 & 2 & 3 & 4 \end{eqnarray*}
+\begin{align*} 1 & 2 & 3 & 4 \end{align*}
 TDEM01
 ====
 $\begin{array}{x} 1 \end{array}$

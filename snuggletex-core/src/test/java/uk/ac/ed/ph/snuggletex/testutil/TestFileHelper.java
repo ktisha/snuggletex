@@ -70,7 +70,7 @@ public final class TestFileHelper {
         return result;
     }
     
-    private static String ensureGetResource(String resourceName) throws IOException {
+    public static String ensureGetResource(String resourceName) throws IOException {
         InputStream resourceStream = TestFileHelper.class.getClassLoader().getResourceAsStream(resourceName);
         if (resourceStream==null) {
             throw new SnuggleRuntimeException("Could not load Resource '" + resourceName

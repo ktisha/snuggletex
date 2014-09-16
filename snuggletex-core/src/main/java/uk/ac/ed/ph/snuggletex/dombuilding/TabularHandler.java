@@ -6,22 +6,16 @@
  */
 package uk.ac.ed.ph.snuggletex.dombuilding;
 
+import org.w3c.dom.Element;
 import uk.ac.ed.ph.snuggletex.SnuggleLogicException;
 import uk.ac.ed.ph.snuggletex.definitions.CoreErrorCode;
 import uk.ac.ed.ph.snuggletex.definitions.CorePackageDefinitions;
 import uk.ac.ed.ph.snuggletex.internal.DOMBuilder;
 import uk.ac.ed.ph.snuggletex.internal.SnuggleParseException;
-import uk.ac.ed.ph.snuggletex.tokens.ArgumentContainerToken;
-import uk.ac.ed.ph.snuggletex.tokens.CommandToken;
-import uk.ac.ed.ph.snuggletex.tokens.EnvironmentToken;
-import uk.ac.ed.ph.snuggletex.tokens.ErrorToken;
-import uk.ac.ed.ph.snuggletex.tokens.FlowToken;
-import uk.ac.ed.ph.snuggletex.tokens.TokenType;
+import uk.ac.ed.ph.snuggletex.tokens.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.w3c.dom.Element;
 
 /**
  * Handles the (rather complex) <tt>tabular</tt> environment.

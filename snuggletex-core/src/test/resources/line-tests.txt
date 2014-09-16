@@ -338,7 +338,7 @@ $1 + \xmlInlineElement{urn}{p:filter}{x}$
 Hello \xmlInlineElement{urn}{p:filter}{A\par B} There
 Hello <p:filter xmlns:p='urn'><p>A</p><p>B</p></p:filter> There
 ====
-\begin{eqnarray*} 1 & 2 \\ 3 & 4 \end{eqnarray*}
+\begin{align*} 1 & 2 \\ 3 & 4 \end{align*}
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
   <mtable>
     <mtr>
@@ -352,7 +352,7 @@ Hello <p:filter xmlns:p='urn'><p>A</p><p>B</p></p:filter> There
   </mtable>
 </math>
 ====
-\begin{eqnarray} \mbox{Hello} & & x \end{eqnarray}
+\begin{align} \mbox{Hello} & & x \end{align}
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
   <mtable>
     <mtr>
@@ -369,7 +369,7 @@ Hello <p:filter xmlns:p='urn'><p>A</p><p>B</p></p:filter> There
   </mtable>
 </math>
 ====
-\begin{eqnarray} 1+x & 2 \end{eqnarray}
+\begin{align} 1+x & 2 \end{align}
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
   <mtable>
     <mtr>

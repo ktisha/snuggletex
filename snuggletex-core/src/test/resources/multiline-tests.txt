@@ -371,9 +371,9 @@ Line 1<br/>
 </table>
 ====
 ## Regression: this was breaking in the token fixer; caused by bad recording of compound token slices
-\begin{eqnarray*}
+\begin{align*}
 & 1 \\
-\end{eqnarray*}
+\end{align*}
 ----
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
   <mtable>
